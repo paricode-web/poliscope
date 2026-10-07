@@ -18,56 +18,116 @@
 html {
   scroll-behavior: smooth;
 }
-/* ==========================================================
-   Starter Theme — Glass Palette
-   ========================================================== */
+@import "tailwindcss";
 
-@theme {
-  /* --- رنگ‌های اصلی پالت --- */
-  --color-primary: #A2D2FF;
-  --color-primary-light: #BDE0FE;
-  --color-accent: #FFAFCC;
-  --color-accent-light: #FFC8DD;
-  --color-secondary: #CDB4DB;
+/* فقط برای نمایش/مخفی‌کردن آیکن‌های پوسته؛ رنگ‌ها از متغیرهای CSS می‌آیند */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-  /* --- متن روی رنگ‌های روشن (کنتراست کافی) --- */
-  --color-primary-ink: #042C53;
-  --color-accent-ink: #4B1528;
-  --color-secondary-ink: #2A1B3D;
-
-  /* --- پس‌زمینه‌ی صنعتی تیره --- */
-  --color-bg-base: #0d0d0f;
-  --color-bg-surface: #17171a;
+/* توکن‌های رنگ، برگرفته از تصویر طراحی (Design System) */
+:root {
+  --canvas: #FBF7F2;        /* سرمنهٔ اصلی */
+  --canvas-2: #F2EDE4;      /* سرمنهٔ ثانویه */
+  --surface: #FFFFFF;       /* سطح کارت */
+  --ink: #1E1A16;           /* متن اصلی */
+  --ink-2: #5D534A;         /* متن ثانویه */
+  --accent: #D86B3A;        /* اکسنت اصلی: نوار، خط و پرکننده‌های تزئینی */
+  --accent-2: #E07A5F;      /* اکسنت ثانویه */
+  --accent-soft: #F3C6B4;   /* اکسنت ملایم */
+  --line: #E6DED3;          /* مرز */
+  /* یک پله تیره‌تر از اکسنت اصلی برای متن، دکمه و نوار فوری (کنتراست AA) */
+  --accent-strong: #B8522A;
+  --accent-hover: #9E441F;
+  --accent-ink: #FFFFFF;
 }
 
+[data-theme="dark"] {
+  --canvas: #16120F;
+  --canvas-2: #1F1A16;
+  --surface: #241E19;
+  --ink: #F4EDE4;
+  --ink-2: #B9AC9F;
+  --accent: #D86B3A;
+  --accent-2: #E07A5F;
+  --accent-soft: #4A2D20;
+  --line: #3A312A;
+  --accent-strong: #E8855A;
+  --accent-hover: #F09A73;
+  --accent-ink: #1E1A16;
+}
 
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-2: var(--canvas-2);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-line: var(--line);
 
-@layer components {
-  .glass {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+  --font-sans: var(--font-sans-fa), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.12);
+
+  /* مقیاس تایپوگرافی: H1 56/72 · H2 36/48 · H3 28/40 · H4 22/32 · Caption 12/20 */
+  --text-h1: 3.5rem;
+  --text-h1--line-height: 4.5rem;
+  --text-h2: 2.25rem;
+  --text-h2--line-height: 3rem;
+  --text-h3: 1.75rem;
+  --text-h3--line-height: 2.5rem;
+  --text-h4: 1.375rem;
+  --text-h4--line-height: 2rem;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.25rem;
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
   }
-
-  .glass-primary {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans-fa), ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
   }
-
-  .glass-accent {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  :focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 3px;
   }
+}
 
-  .glass-secondary {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    background: color-mix(in srgb, var(--color-secondary) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-secondary) 25%, transparent);
+@utility container-page {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (min-width: 80rem) {
+    padding-inline: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
