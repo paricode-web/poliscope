@@ -10,3 +10,7 @@ export function formatRelativeTime(iso: string, now: number = Date.now()): strin
   if (abs < 60 * 24) return relative.format(Math.round(minutes / 60), "hour");
   return relative.format(Math.round(minutes / (60 * 24)), "day");
 }
+
+const dateTime = new Intl.DateTimeFormat("fa-IR", { dateStyle: "long", timeStyle: "short" });
+
+export const formatDateTime = (iso: string) => dateTime.format(new Date(iso));

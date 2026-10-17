@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { iconButtonClass } from "@/components/ui/styles";
+import { iconButtonClass } from "../ui/styles"; 
 import type { NavItem } from "@/lib/site";
 import { MainNav } from "./MainNav";
 

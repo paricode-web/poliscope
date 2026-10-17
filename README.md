@@ -1,163 +1,20 @@
-# Lumina Vitray
+# دیدگاه | بخش اول و دوم (ساختار بدون پوشهٔ `src/`)
 
-A modern Persian e-commerce application for handmade stained glass artwork, built with Next.js and TypeScript.
+محتوای این پوشه را روی ریشهٔ پروژه کپی کنید: `app/`، `components/`، `lib/` و `prisma/`.
+این ساختار با `import prisma from "../lib/prisma"` در seed شما هم‌خوان است (یعنی `lib/` در ریشه است). اگر `tsconfig` شما alias را به شکل `"@/*": ["./*"]` دارد، چیز دیگری لازم نیست.
 
-## ✨ Features
+## قبل از کپی
+- فایل‌های هم‌نام را با نسخهٔ خودتان مقایسه کنید: `app/layout.tsx`، `app/page.tsx`، `app/globals.css`، `components/ui/Button.tsx`، `components/layout/Header.tsx` و `Footer.tsx`. اگر استارتر چیزی مثل `SessionProvider` در layout دارد، آن را در `layout.tsx` جدید نگه دارید.
+- اگر `Toaster` قبلاً در layout هست، `AppToaster` را حذف کنید.
+- `prisma/seed.ts` همان فایل شماست؛ فقط بخش ادمین دست‌نخورده مانده و دسته‌ها و خبرهای نمونه به انتها اضافه شده‌اند.
 
-* User authentication and registration
-* Protected checkout and profile pages
-* Product browsing and product detail pages
-* Responsive shopping cart with Zustand
-* Cart drawer for quick cart access
-* Checkout flow with shipping information
-* Server-side price and stock validation
-* Order creation and order management
-* Fake payment flow for demonstration purposes
-* Admin dashboard for product and order management
-* Product image upload and management
-* Search functionality
-* Responsive design for desktop, tablet, and mobile
-* Persian RTL interface
-
-## 🛠 Tech Stack
-
-* **Next.js** — App Router
-* **TypeScript**
-* **React**
-* **Tailwind CSS**
-* **Prisma ORM**
-* *** PostgreSQL — production database**
-* ***SQLite — local development and migration backup**
-* **NextAuth** — authentication
-* **Zustand** — client-side cart state
-* **bcryptjs** — password hashing
-
-## 🏗 Architecture
-
-The project uses the Next.js App Router and separates server-side database operations from client-side interactive components.
-
-### Main areas
-
-* `app/` — routes, pages, server actions and API routes
-* `components/` — reusable UI components
-* `lib/` — shared utilities, stores and payment logic
-* `prisma/` — Prisma schema and database migrations
-* `public/` — static assets
-* `types/` — TypeScript type extensions
-
-## 🔐 Authentication & Authorization
-
-The application includes:
-
-* User registration
-* Credential-based login
-* Password hashing with bcryptjs
-* Session-based authentication with NextAuth
-* Role-based access for the admin dashboard
-* Protected checkout functionality
-
-## 🛒 E-commerce Flow
-
-The main shopping flow is:
-
-**Products → Cart → Checkout → Order → Payment → Success**
-
-Product prices and stock are validated on the server instead of trusting values stored in the client-side cart.
-
-## 💳 Payment Flow
-
-The project currently uses a **fake payment flow** for demonstration and learning purposes.
-
-The flow is:
-
-**Create Order → Start Payment → Payment Authority → Verify Payment → Mark Order as Paid**
-
-No real payment gateway is connected.
-
-## 👨‍💼 Admin Panel
-
-The admin dashboard provides functionality for:
-
-* Creating products
-* Updating products
-* Deleting products
-* Uploading product images
-* Viewing orders
-* Viewing users and order information
-
-## 📱 Responsive Design
-
-The interface is designed to work across:
-
-* Desktop
-* Tablet
-* Mobile
-
-## 🚀 Getting Started
-
-Clone the repository:
-
+## راه‌اندازی
 ```bash
-git clone https://github.com/paricode-web/lumina-vitray.git
+npx prisma migrate dev --name add_news_models
+npx prisma db seed
 ```
+متغیر `NEXT_PUBLIC_SITE_URL` را برای sitemap، RSS و canonical تنظیم کنید.
 
-Move into the project:
-
-```bash
-cd lumina-vitray
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create a `.env` file and configure the required environment variables.
-
-Run Prisma migrations:
-
-```bash
-npx prisma migrate dev
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Open:
-
-```text
-NEXTAUTH_URL=your_nextauth_url_here
-```
-
-## 🔑 Environment Variables
-
-The project uses environment variables for configuration and authentication secrets.
-
-Create a `.env` file locally and add the required values.
-
-> Never commit your `.env` file or secret credentials to GitHub.
-
-## 📸 Screenshots
-
-Screenshots and a live demo will be added after the production deployment.
-
-## 🔮 Future Improvements
-
-* Real payment gateway integration
-* PostgreSQL production database
-* Cloud-based image storage
-* Persian / English localization
-* SEO improvements
-* Product filtering and sorting
-* Advanced order management
-* Multi-tenant SaaS architecture
-
-## 👩‍💻 Author
-
-**Pari**
-
-Frontend Developer focused on React, Next.js and TypeScript.
+## صفحه‌ها
+`/` · `/category/[slug]` · `/news/[slug]` · `/search` · `/about` `/contact` `/terms` `/privacy` · `/sitemap.xml` · `/robots.txt` · `/rss.xml`
+متن‌های «قوانین» و «حریم خصوصی» نمونه‌اند و باید با متن واقعی جایگزین شوند.

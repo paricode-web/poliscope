@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "../ui/Button";
 import { newsletterSchema } from "@/lib/validations/newsletter";
 
 const GENERIC_ERROR = "خطایی رخ داد. لطفاً دوباره تلاش کنید.";

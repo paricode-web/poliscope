@@ -1,70 +1,64 @@
-﻿import Link from "next/link";
+import { CategorySection } from "./components/news/CategorySection"; 
+import { CompactNewsCard } from "./components/news/CompactNewsCard";
+import { FeaturedArticle } from "./components/news/FeaturedArticle"; 
+import { NewsCard } from "./components/news/NewsCard"; 
+import { NewsletterSection } from "./components/news/NewsletterSection";
+import { SectionHeader } from "./components/ui/SectionHeader";
+import { getHomeFeed } from "@/lib/news";
+import { siteConfig } from "@/lib/site";
 
-export default function Home() {
+export const revalidate = 300; 
+
+export default async function HomePage() {
+  const { lead, secondary, latest, sections } = await getHomeFeed();
+
   return (
-    <main dir="rtl" className="min-h-screen bg-bg-base text-white">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6">
+    <div className="container-page space-y-20 py-10 lg:space-y-28 lg:py-14">
+      <h1 className="sr-only">
+        {siteConfig.name}، {siteConfig.tagline}
+      </h1>
 
-        <section className="flex flex-1 items-center justify-center py-32">
-          <div className="w-full max-w-3xl text-center">
-
-            <span className="mb-5 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-neutral-300">
-              Next.js Starter
-            </span>
-
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              پروژه بعدی خود را بسازید
-            </h1>
-
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-neutral-400 sm:text-lg">
-              یک پایه مدرن و قابل استفاده مجدد برای پروژه‌های Next.js،
-              همراه با احراز هویت، Prisma، TypeScript و ساختار تمیز.
-            </p>
-
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link
-                href="/signup"
-                className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-ink transition hover:bg-primary-light"
-              >
-                شروع کنید
-              </Link>
-
-              <Link
-                href="/login"
-                className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 font-semibold transition hover:bg-white/10"
-              >
-                ورود
-              </Link>
-            </div>
-
+      {lead ? (
+        <section aria-label="خبرهای مهم" className="grid gap-10 lg:grid-cols-12 lg:gap-x-12">
+          <div className="lg:col-span-8">
+            <FeaturedArticle article={lead} />
+          </div>
+          <div className="flex flex-col divide-y divide-line lg:col-span-4 lg:border-s lg:border-line lg:ps-8">
+            {secondary.map((article) => (
+              <CompactNewsCard
+                key={article.id}
+                article={article}
+                withImage
+                showSummary
+                className="py-6 first:pt-0 last:pb-0"
+              />
+            ))}
           </div>
         </section>
+      ) : (
+        <p className="py-24 text-center text-ink-2">هنوز خبری منتشر نشده است.</p>
+      )}
 
-        <section className="grid gap-4 pb-16 sm:grid-cols-3">
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 font-semibold">احراز هویت</h2>
-            <p className="text-sm leading-6 text-neutral-400">
-              سیستم احراز هویت مبتنی بر Credentials و NextAuth.
-            </p>
+      {latest.length > 0 && (
+        <section aria-labelledby="latest-heading">
+          <SectionHeader id="latest-heading" title="آخرین اخبار" />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {latest.map((article) => (
+              <NewsCard key={article.id} article={article} />
+            ))}
           </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 font-semibold">دیتابیس</h2>
-            <p className="text-sm leading-6 text-neutral-400">
-              Prisma ORM و PostgreSQL با یک لایه دیتابیس قابل استفاده مجدد.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <h2 className="mb-2 font-semibold">TypeScript</h2>
-            <p className="text-sm leading-6 text-neutral-400">
-              یک پایه TypeScript برای توسعه سریع و ساخت پروژه‌های جدید.
-            </p>
-          </div>
-
         </section>
-      </div>
-    </main>
+      )}
+
+      {sections.length > 0 && (
+        <div className="grid gap-x-16 gap-y-16 md:grid-cols-2">
+          {sections.map(({ category, articles }) => (
+            <CategorySection key={category.slug} category={category} articles={articles} />
+          ))}
+        </div>
+      )}
+
+      <NewsletterSection />
+    </div>
   );
 }

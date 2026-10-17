@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { CategoryBadge } from "@/components/ui/CategoryBadge";
-import { CoverImage } from "@/components/ui/CoverImage";
+import { CategoryBadge } from "../ui/CategoryBadge";
+import { CoverImage } from "../ui/CoverImage";
 import { cn } from "@/lib/cn";
 import { articleHref } from "@/lib/site";
 import type { Article } from "@/lib/types";

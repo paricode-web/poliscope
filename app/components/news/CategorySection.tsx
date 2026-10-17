@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { CoverImage } from "@/components/ui/CoverImage";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { CoverImage } from "../ui/CoverImage";
+import { SectionHeader } from "../ui/SectionHeader";
 import { articleHref, categoryHref } from "@/lib/site";
 import type { Article, Category } from "@/lib/types";
 import { ArticleMeta } from "./ArticleMeta";

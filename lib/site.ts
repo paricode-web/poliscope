@@ -42,6 +42,12 @@ export const navItems: NavItem[] = [
   ...categories.map((c) => ({ label: c.name, href: categoryHref(c.slug) })),
 ];
 
+export function findCategory(slug: string): Category | undefined {
+  return categories.find((c) => c.slug === slug);
+}
+
+export const absoluteUrl = (path: string) => new URL(path, siteConfig.url).toString();
+
 export function getCategory(slug: CategorySlug): Category {
   const category = categories.find((c) => c.slug === slug);
   if (!category) throw new Error(`Unknown category: ${slug}`);

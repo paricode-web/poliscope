@@ -1,4 +1,4 @@
-
+import Link from "next/link";
 export default function AboutUsPage() {
   return (
     <main
@@ -210,12 +210,12 @@ export default function AboutUsPage() {
             با فضای تو ارتباط برقرار می‌کند.
           </p>
 
-          <a
-            href="/"
-            className="mt-8 inline-flex rounded-full bg-white px-8 py-4 font-medium text-gray-900 transition hover:-translate-y-1"
+        <Link
+           href="/"
+          className="mt-8 inline-flex rounded-full bg-white px-8 py-4 font-medium text-gray-900 transition hover:-translate-y-1"
           >
             مشاهده محصولات
-          </a>
+        </Link>
         </div>
       </section>
     </main>

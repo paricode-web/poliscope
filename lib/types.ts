@@ -15,7 +15,10 @@ export interface ArticleImage {
   src: string;
   alt: string;
 }
-
+  export interface ArticleDetail extends Article {
+    body: string;
+    updatedAt: string;
+  }
 export interface Article {
   id: string;
   slug: string;

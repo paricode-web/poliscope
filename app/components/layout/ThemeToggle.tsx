@@ -1,7 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { iconButtonClass } from "@/components/ui/styles";
+import { iconButtonClass } from "../ui/styles";
 
 export function ThemeToggle() {
   function toggle() {

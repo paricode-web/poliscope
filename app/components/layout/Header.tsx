@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
-import { SearchInput } from "@/components/ui/SearchInput";
-import { iconButtonClass } from "@/components/ui/styles";
+import { SearchInput } from "../ui/SearchInput"; 
+import { iconButtonClass } from "../ui/styles";
 import { cn } from "@/lib/cn";
-import { navItems } from "@/lib/site";
+import { navItems } from "@/lib/site"; 
 import { Logo } from "./Logo";
 import { MainNav } from "./MainNav";
 import { MobileMenu } from "./MobileMenu";
@@ -25,5 +25,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  );
+  );                                     
 }

@@ -7,6 +7,8 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   basePath: string;
+  /** پارامترهای ثابت آدرس، مثل q در جستجو */
+  query?: Record<string, string>;
 }
 
 const itemClass =
@@ -19,9 +21,15 @@ function pageWindow(current: number, total: number): Array<number | "gap"> {
   return pages.flatMap<number | "gap">((page, i) => (i > 0 && page - pages[i - 1] > 1 ? ["gap", page] : [page]));
 }
 
-export function Pagination({ currentPage, totalPages, basePath }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, basePath, query }: PaginationProps) {
   if (totalPages <= 1) return null;
-  const href = (page: number) => (page === 1 ? basePath : `${basePath}?page=${page}`);
+
+  const href = (page: number) => {
+    const params = new URLSearchParams(query);
+    if (page > 1) params.set("page", String(page));
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  };
 
   return (
     <nav aria-label="صفحه‌بندی" className="flex items-center justify-center gap-2">
@@ -47,9 +55,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             aria-current={page === currentPage ? "page" : undefined}
             className={cn(
               itemClass,
-              page === currentPage
-                ? "border-accent-strong bg-accent-strong text-accent-ink"
-                : "hover:bg-canvas-2",
+              page === currentPage ? "border-accent-strong bg-accent-strong text-accent-ink" : "hover:bg-canvas-2",
             )}
           >
             {formatNumber(page)}

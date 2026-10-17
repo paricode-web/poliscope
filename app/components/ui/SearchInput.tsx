@@ -1,13 +1,21 @@
 import { Search } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export function SearchInput({ id, className }: { id: string; className?: string }) {
+interface SearchInputProps {
+  id: string;
+  defaultValue?: string;
+  size?: "md" | "lg";
+  className?: string;
+}
+
+export function SearchInput({ id, defaultValue, size = "md", className }: SearchInputProps) {
   return (
     <form
       action="/search"
       role="search"
       className={cn(
-        "flex h-10 items-center gap-2 rounded-md border border-line bg-surface px-3 focus-within:border-accent-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent-strong",
+        size === "lg" ? "h-12 text-base" : "h-10 text-sm",
+        "flex items-center gap-2 rounded-md border border-line bg-surface px-3 focus-within:border-accent-strong focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent-strong",
         className,
       )}
     >
@@ -18,10 +26,11 @@ export function SearchInput({ id, className }: { id: string; className?: string 
       <input
         id={id}
         name="q"
+        defaultValue={defaultValue}
         type="search"
         placeholder="جستجو در اخبار…"
         autoComplete="off"
-        className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-2"
+        className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-ink-2"
       />
     </form>
   );
