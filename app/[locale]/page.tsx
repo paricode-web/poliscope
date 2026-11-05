@@ -1,9 +1,9 @@
-import { CategorySection } from "./components/news/CategorySection"; 
-import { CompactNewsCard } from "./components/news/CompactNewsCard";
-import { FeaturedArticle } from "./components/news/FeaturedArticle"; 
-import { NewsCard } from "./components/news/NewsCard"; 
-import { NewsletterSection } from "./components/news/NewsletterSection";
-import { SectionHeader } from "./components/ui/SectionHeader";
+import { CategorySection } from "../components/news/CategorySection"; 
+import { CompactNewsCard } from "../components/news/CompactNewsCard";
+import { FeaturedArticle } from "../components/news/FeaturedArticle";
+import { NewsCard } from "../components/news/NewsCard"; 
+import { NewsletterSection } from "../components/news/NewsletterSection"; 
+import { SectionHeader } from "../components/ui/SectionHeader"; 
 import { getHomeFeed } from "@/lib/news";
 import { siteConfig } from "@/lib/site";
 

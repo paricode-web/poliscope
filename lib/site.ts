@@ -1,7 +1,8 @@
+
 import type { Article, Category, CategorySlug } from "./types";
 
 export const siteConfig = {
-  name: "دیدگاه",
+  name: "Poliscope",
   tagline: "رسانهٔ خبری تحلیلی",
   description:
     "دیدگاه رسانه‌ای مستقل و تحلیلی است که با هدف ارائهٔ اخبار دقیق، تحلیل‌های عمیق و نگاهی متفاوت به رویدادهای مهم فعالیت می‌کند.",

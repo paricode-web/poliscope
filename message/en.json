@@ -1,0 +1,19 @@
+{
+  "Site": {
+    "name": "Poliscope",
+    "tagline": "Politics watched. Society analyzed."
+  },
+  "Header": {
+    "search": "Search",
+    "switchLanguage": "تغییر زبان به فارسی",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "Footer": {
+    "categories": "Categories",
+    "about": "About {name}",
+    "contact": "Contact",
+    "rss": "RSS feed",
+    "rights": "© {name}. All rights reserved."
+  }
+}

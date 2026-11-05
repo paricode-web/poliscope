@@ -1,0 +1,19 @@
+{
+  "Site": {
+    "name": "پولیسکوپ",
+    "tagline": "رصد سیاست | تحلیل جامعه"
+  },
+  "Header": {
+    "search": "جستجو",
+    "switchLanguage": "Switch to English",
+    "openMenu": "باز کردن منو",
+    "closeMenu": "بستن منو"
+  },
+  "Footer": {
+    "categories": "دسته‌بندی‌ها",
+    "about": "دربارهٔ {name}",
+    "contact": "ارتباط با ما",
+    "rss": "خوراک RSS",
+    "rights": "تمام حقوق برای {name} محفوظ است."
+  }
+}
