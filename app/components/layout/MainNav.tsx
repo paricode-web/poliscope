@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 import type { NavItem } from "@/lib/site";
-
 interface MainNavProps {
   items: NavItem[];
   orientation?: "horizontal" | "vertical";
@@ -15,9 +14,9 @@ interface MainNavProps {
 export function MainNav({ items, orientation = "horizontal", className, onNavigate }: MainNavProps) {
   const pathname = usePathname();
   const horizontal = orientation === "horizontal";
-
+const t = useTranslations("Footer");
   return (
-    <nav aria-label="دسته‌بندی‌ها" className={className}>
+    <nav aria-label={t("categories")} className={className}>
       <ul className={cn("flex", horizontal ? "items-center gap-1" : "flex-col")}>
         {items.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);

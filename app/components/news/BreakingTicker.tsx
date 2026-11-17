@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 export interface TickerItem {
   id: string;
@@ -16,6 +17,7 @@ const controlClass =
   "inline-flex size-8 items-center justify-center rounded-sm hover:bg-black/15 focus-visible:outline-accent-ink";
 
 export function BreakingTicker({ items }: { items: TickerItem[] }) {
+  const t = useTranslations("Ticker");
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -34,7 +36,7 @@ export function BreakingTicker({ items }: { items: TickerItem[] }) {
   return (
     <div
       role="region"
-      aria-label="خبر فوری"
+      aria-label={t("label")}
       className="bg-accent-strong text-accent-ink"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -43,7 +45,7 @@ export function BreakingTicker({ items }: { items: TickerItem[] }) {
     >
       <div className="container-page flex h-11 items-center gap-3">
         <span className="shrink-0 rounded-sm bg-canvas px-3 py-0.5 text-sm font-extrabold text-accent-strong">
-          خبر فوری
+          {t("label")}
         </span>
         <p className="min-w-0 flex-1 truncate text-sm md:text-base">
           <Link href={item.href} className="underline-offset-4 hover:underline focus-visible:outline-accent-ink">
@@ -53,11 +55,11 @@ export function BreakingTicker({ items }: { items: TickerItem[] }) {
         <span className="hidden shrink-0 text-sm opacity-90 sm:inline">{item.time}</span>
         {items.length > 1 && (
           <div className="flex shrink-0 items-center">
-            <button type="button" aria-label="خبر قبلی" onClick={() => step(-1)} className={controlClass}>
-              <ChevronRight aria-hidden className="size-4" />
+            <button type="button" aria-label={t("previous")} onClick={() => step(-1)} className={controlClass}>
+              <ChevronLeft aria-hidden className="size-4 rtl:-scale-x-100" />
             </button>
-            <button type="button" aria-label="خبر بعدی" onClick={() => step(1)} className={controlClass}>
-              <ChevronLeft aria-hidden className="size-4" />
+            <button type="button" aria-label={t("next")} onClick={() => step(1)} className={controlClass}>
+              <ChevronRight aria-hidden className="size-4 rtl:-scale-x-100" />
             </button>
           </div>
         )}

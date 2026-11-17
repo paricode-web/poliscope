@@ -7,12 +7,35 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Locale {
+  FA
+  EN
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+enum ArticleType {
+  NEWS
+  ARTICLE
+  ANALYSIS
+  NOTE
+  BOOK_REVIEW
+  INTERVIEW
+}
 model User {
   id       String  @id @default(uuid())
   name     String?
   email    String  @unique
   password String
   role     String  @default("USER")
+
+  slug      String? @unique
+  nameEn    String?
+  bio       String?
+  bioEn     String?
+  avatarUrl String?
 
   articles Article[]
 
@@ -24,35 +47,55 @@ model Category {
   id       String    @id @default(uuid())
   slug     String    @unique
   name     String
+  nameEn   String?
+  articles Article[]
+}
+
+model Tag {
+  id       String    @id @default(uuid())
+  slug     String    @unique
+  name     String
+  nameEn   String?
   articles Article[]
 }
 
 model Article {
-  id           String   @id @default(uuid())
-  slug         String   @unique
-  title        String
-  summary      String
-  body         String   @db.Text
-  imageUrl     String?
-  imageAlt     String?
-  readMinutes  Int      @default(3)
-  isBreaking   Boolean  @default(false)
-  featuredRank Int?
-  publishedAt  DateTime @default(now())
+  id             String        @id @default(uuid())
+  locale         Locale        @default(FA)
+translationKey String        @default(dbgenerated("(gen_random_uuid())::text"))
+  slug           String
+  title          String
+  summary        String
+  body           String        @db.Text
+  imageUrl       String?
+  imageAlt       String?
+  readMinutes    Int           @default(3)
+  isBreaking     Boolean       @default(false)
+  featuredRank   Int?
+  type           ArticleType   @default(ANALYSIS)
+  status         ArticleStatus @default(PUBLISHED)
+  publishedAt    DateTime      @default(now())
 
+  titleEn    String?
+  summaryEn  String?
+  bodyEn     String?
+  imageAltEn String?
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
   authorId   String?
   author     User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  tags       Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([publishedAt(sort: Desc)])
+  @@unique([locale, slug])
+  @@index([locale, status, publishedAt(sort: Desc)])
   @@index([categoryId, publishedAt(sort: Desc)])
   @@index([isBreaking, publishedAt(sort: Desc)])
   @@index([featuredRank])
   @@index([authorId])
+  @@index([translationKey])
 }
 
 model Subscriber {
@@ -60,4 +103,3 @@ model Subscriber {
   email     String   @unique
   createdAt DateTime @default(now())
 }
-

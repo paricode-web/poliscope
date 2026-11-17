@@ -1,22 +1,36 @@
+import { getCategoryNames } from "@/lib/categories";
 import { getLatestForFeed } from "@/lib/news";
-import { absoluteUrl, articleHref, getCategory, siteConfig } from "@/lib/site";
-
+import { absoluteUrl, articleHref, siteConfig } from "@/lib/site";
 export const revalidate = 600;
 
-const XML_ESCAPES: Record<string, string> = { "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" };
-const escapeXml = (value: string) => value.replace(/[<>&'"]/g, (char) => XML_ESCAPES[char]);
+const XML_ESCAPES: Record<string, string> = {
+  "<": "&lt;",
+  ">": "&gt;",
+  "&": "&amp;",
+  "'": "&apos;",
+  '"': "&quot;",
+};
+
+const escapeXml = (value: string) =>
+  value.replace(/[<>&'"]/g, (char) => XML_ESCAPES[char]);
 
 export async function GET() {
-  const articles = await getLatestForFeed(30);
+  const [articles, categoryNames] = await Promise.all([
+    getLatestForFeed("fa", 30),
+    getCategoryNames("fa"),
+  ]);
+
   const items = articles
     .map((article) => {
       const link = absoluteUrl(articleHref(article));
+      const categoryName = categoryNames[article.category] ?? article.category;
+
       return `<item>
 <title>${escapeXml(article.title)}</title>
 <link>${escapeXml(link)}</link>
 <guid isPermaLink="true">${escapeXml(link)}</guid>
 <pubDate>${new Date(article.publishedAt).toUTCString()}</pubDate>
-<category>${escapeXml(getCategory(article.category).name)}</category>
+<category>${escapeXml(categoryName)}</category>
 <description>${escapeXml(article.summary)}</description>
 </item>`;
     })
@@ -34,5 +48,9 @@ ${items}
 </channel>
 </rss>`;
 
-  return new Response(xml, { headers: { "Content-Type": "application/rss+xml; charset=utf-8" } });
+  return new Response(xml, {
+    headers: {
+      "Content-Type": "application/rss+xml; charset=utf-8",
+    },
+  });
 }

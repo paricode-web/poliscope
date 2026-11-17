@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { CategoryBadge } from "../ui/CategoryBadge"; 
-import { CoverImage } from "../ui/CoverImage"; 
-import { articleHref } from "@/lib/site"; 
+import { Link } from "@/i18n/navigation";
+import { CategoryBadge } from "../ui/CategoryBadge";
+import { CoverImage } from "../ui/CoverImage";
+import { articleHref } from "@/lib/site";
 import type { Article } from "@/lib/types";
 import { ArticleMeta } from "./ArticleMeta";
 

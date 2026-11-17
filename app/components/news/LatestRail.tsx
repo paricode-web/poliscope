@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import type { LatestFeedState } from "./useLatestFeed";
 import { NewsCard } from "./NewsCard";
 
@@ -78,6 +79,7 @@ function RailButton({
 
 /** حالت ساده: ریل افقی با اسکرول/سوایپ بومی. برای موبایل، لمسی، زوم بالا و کاهش حرکت. */
 export function LatestRail({ feed, labelledBy }: LatestRailProps) {
+  const t = useTranslations("Latest");
   const { items, hasMore, loading, error, status, initialCount, loadMore } = feed;
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
@@ -139,10 +141,10 @@ export function LatestRail({ feed, labelledBy }: LatestRailProps) {
   return (
     <div>
       <div className="mb-4 flex justify-end gap-2">
-        <RailButton label="اخبار قبلی" disabled={atStart} onClick={() => scrollByPage(-1)}>
+        <RailButton label={t("previous")} disabled={atStart} onClick={() => scrollByPage(-1)}>
           <Chevron toward="start" />
         </RailButton>
-        <RailButton label="اخبار بعدی" disabled={atEnd && !hasMore} onClick={() => scrollByPage(1)}>
+        <RailButton label={t("next")} disabled={atEnd && !hasMore} onClick={() => scrollByPage(1)}>
           <Chevron toward="end" />
         </RailButton>
       </div>
@@ -172,13 +174,13 @@ export function LatestRail({ feed, labelledBy }: LatestRailProps) {
 
           {error && (
             <li className="flex w-64 shrink-0 flex-col items-center justify-center gap-3 text-center">
-              <p className="text-sm text-ink-2">بارگذاری اخبار بیشتر ناموفق بود.</p>
+              <p className="text-sm text-ink-2">{t("loadFailed")}</p>
               <button
                 type="button"
                 onClick={() => void loadMore()}
                 className={`inline-flex min-h-11 items-center rounded-lg border border-line bg-surface px-5 text-sm font-bold transition-colors hover:text-accent-strong ${focusRing}`}
               >
-                تلاش دوباره
+                {t("retry")}
               </button>
             </li>
           )}

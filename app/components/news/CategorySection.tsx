@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { CoverImage } from "../ui/CoverImage";
 import { SectionHeader } from "../ui/SectionHeader";
 import { articleHref, categoryHref } from "@/lib/site";
@@ -12,13 +13,14 @@ interface CategorySectionProps {
 }
 
 export function CategorySection({ category, articles }: CategorySectionProps) {
+  const tCat = useTranslations("Categories");
   const [lead, ...rest] = articles;
   if (!lead) return null;
   const headingId = `section-${category.slug}`;
 
   return (
     <section aria-labelledby={headingId}>
-      <SectionHeader id={headingId} title={category.name} href={categoryHref(category.slug)} />
+      <SectionHeader id={headingId} title={tCat(category.slug)} href={categoryHref(category.slug)} />
       <article>
         <Link href={articleHref(lead)} tabIndex={-1} aria-hidden="true" className="block">
           <CoverImage image={lead.image} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[16/9] rounded-lg" />

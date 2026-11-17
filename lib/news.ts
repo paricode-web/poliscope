@@ -5,6 +5,7 @@ import { categories } from "./site";
 import type { Article, ArticleDetail, Category, CategorySlug } from "./types";
 
 export const PAGE_SIZE = 12;
+export const LATEST_PAGE_SIZE = 6;
 
 export interface CategoryFeed {
   category: Category;
@@ -40,7 +41,19 @@ const articleSelect = {
 
 type ArticleRow = Prisma.ArticleGetPayload<{ select: typeof articleSelect }>;
 
-const isPublished = (): Prisma.ArticleWhereInput => ({ publishedAt: { lte: new Date() } });
+/** نوع enum ستون locale در Prisma (مقدارهایش "FA" و "EN" است). */
+type DbLocale = NonNullable<Prisma.ArticleWhereInput["locale"]> extends infer T
+  ? Extract<T, string>
+  : never;
+
+/** تبدیل locale آدرس (fa / en) به مقدار enum در دیتابیس. */
+const toDbLocale = (locale: string) => (locale === "en" ? "EN" : "FA") as DbLocale;
+
+/** فقط خبرهای منتشرشده‌ی همان زبان. هر زبان ردیف جداگانه‌ی خودش را دارد (با translationKey مشترک). */
+const published = (locale: string): Prisma.ArticleWhereInput => ({
+  locale: toDbLocale(locale),
+  publishedAt: { lte: new Date() },
+});
 const newestFirst = { publishedAt: "desc" } as const;
 
 function toArticle(row: ArticleRow): Article {
@@ -72,9 +85,9 @@ async function findPage(where: Prisma.ArticleWhereInput, page: number): Promise<
   return { items: rows.map(toArticle), total, totalPages: Math.ceil(total / PAGE_SIZE) };
 }
 
-export async function getBreakingNews(limit = 5): Promise<Article[]> {
+export async function getBreakingNews(locale: string, limit = 5): Promise<Article[]> {
   const rows = await prisma.article.findMany({
-    where: { ...isPublished(), isBreaking: true },
+    where: { ...published(locale), isBreaking: true },
     orderBy: newestFirst,
     take: limit,
     select: articleSelect,
@@ -82,12 +95,12 @@ export async function getBreakingNews(limit = 5): Promise<Article[]> {
   return rows.map(toArticle);
 }
 
-export async function getHomeFeed(): Promise<HomeFeed> {
-  const unfeatured: Prisma.ArticleWhereInput = { ...isPublished(), featuredRank: null };
+export async function getHomeFeed(locale: string): Promise<HomeFeed> {
+  const unfeatured: Prisma.ArticleWhereInput = { ...published(locale), featuredRank: null };
 
   const [featuredRows, latestRows, sectionRows] = await Promise.all([
     prisma.article.findMany({
-      where: { ...isPublished(), featuredRank: { not: null } },
+      where: { ...published(locale), featuredRank: { not: null } },
       orderBy: { featuredRank: "asc" },
       take: 4,
       select: articleSelect,
@@ -116,14 +129,14 @@ export async function getHomeFeed(): Promise<HomeFeed> {
   };
 }
 
-export function getCategoryPage(slug: CategorySlug, page: number) {
-  return findPage({ ...isPublished(), category: { slug } }, page);
+export function getCategoryPage(slug: CategorySlug, page: number, locale: string) {
+  return findPage({ ...published(locale), category: { slug } }, page);
 }
 
-export function searchArticles(query: string, page: number) {
+export function searchArticles(query: string, page: number, locale: string) {
   return findPage(
     {
-      ...isPublished(),
+      ...published(locale),
       OR: [
         { title: { contains: query, mode: "insensitive" } },
         { summary: { contains: query, mode: "insensitive" } },
@@ -135,28 +148,18 @@ export function searchArticles(query: string, page: number) {
 }
 
 /** با cache از React، فراخوانی تکراری در generateMetadata و صفحه فقط یک کوئری می‌زند. */
-export const getArticleBySlug = cache(async (slug: string): Promise<ArticleDetail | null> => {
+export const getArticleBySlug = cache(async (slug: string, locale: string): Promise<ArticleDetail | null> => {
   const row = await prisma.article.findFirst({
-    where: { slug, ...isPublished() },
+    where: { slug, ...published(locale) },
     select: { ...articleSelect, body: true, updatedAt: true },
   });
   if (!row) return null;
   return { ...toArticle(row), body: row.body, updatedAt: row.updatedAt.toISOString() };
 });
 
-export async function getRelatedArticles(article: Article, limit = 3): Promise<Article[]> {
+export async function getRelatedArticles(article: Article, locale: string, limit = 3): Promise<Article[]> {
   const rows = await prisma.article.findMany({
-    where: { ...isPublished(), category: { slug: article.category }, id: { not: article.id } },
-    orderBy: newestFirst,
-    take: limit,
-    select: articleSelect,
-  });                                                                                                                                                                                                                                                                                                                                                             
-  return rows.map(toArticle);
-}
-
-export async function getLatestForFeed(limit = 30): Promise<Article[]> {
-  const rows = await prisma.article.findMany({
-    where: isPublished(),
+    where: { ...published(locale), category: { slug: article.category }, id: { not: article.id } },
     orderBy: newestFirst,
     take: limit,
     select: articleSelect,
@@ -164,10 +167,41 @@ export async function getLatestForFeed(limit = 30): Promise<Article[]> {
   return rows.map(toArticle);
 }
 
+export async function getLatestForFeed(locale: string, limit = 30): Promise<Article[]> {
+  const rows = await prisma.article.findMany({
+    where: published(locale),
+    orderBy: newestFirst,
+    take: limit,
+    select: articleSelect,
+  });
+  return rows.map(toArticle);
+}
+
+/** برش صفحه‌بندی‌شده‌ی آخرین اخبار؛ asOf لحظه‌ی مرجع است تا انتشار خبر جدید، offset را جابه‌جا نکند. */
+export async function getLatestSlice(
+  locale: string,
+  offset: number,
+  limit: number = LATEST_PAGE_SIZE,
+  asOf: Date = new Date(),
+): Promise<{ items: Article[]; hasMore: boolean }> {
+  const rows = await prisma.article.findMany({
+    where: { locale: toDbLocale(locale), publishedAt: { lte: asOf }, featuredRank: null },
+    orderBy: newestFirst,
+    skip: offset,
+    take: limit + 1,
+    select: articleSelect,
+  });
+  return {
+    items: rows.slice(0, limit).map(toArticle),
+    hasMore: rows.length > limit,
+  };
+}
+
+/** برای سایت‌مپ: locale هم برمی‌گردد تا آدرس هر زبان جدا ساخته شود. */
 export function getSitemapArticles() {
   return prisma.article.findMany({
-    where: isPublished(),
+    where: { publishedAt: { lte: new Date() } },
     orderBy: newestFirst,
-    select: { slug: true, updatedAt: true },
+    select: { slug: true, locale: true, translationKey: true, updatedAt: true },
   });
 }

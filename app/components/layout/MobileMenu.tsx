@@ -5,10 +5,11 @@ import { Menu, X } from "lucide-react";
 import { iconButtonClass } from "../ui/styles"; 
 import type { NavItem } from "@/lib/site";
 import { MainNav } from "./MainNav";
+import { useTranslations } from "next-intl";
 
 export function MobileMenu({ items }: { items: NavItem[] }) {
   const [open, setOpen] = useState(false);
-
+const t = useTranslations("Header");
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -24,7 +25,7 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
         type="button"
         aria-expanded={open}
         aria-controls="mobile-menu"
-        aria-label={open ? "بستن منو" : "باز کردن منو"}
+      aria-label={open ? t("closeMenu") : t("openMenu")}
         onClick={() => setOpen((value) => !value)}
         className={iconButtonClass}
       >
@@ -34,6 +35,7 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
         <div id="mobile-menu" className="absolute inset-x-0 top-full border-b border-line bg-canvas">
           <div className="container-page py-2">
             <MainNav items={items} orientation="vertical" onNavigate={() => setOpen(false)} />
+         
           </div>
         </div>
       )}

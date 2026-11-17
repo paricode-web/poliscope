@@ -1,0 +1,103 @@
+
+{
+  "Site": {
+    "name": "پولیسکوپ",
+    "tagline": "رصد سیاست | تحلیل جامعه",
+    "description": "رسانه‌ای مستقل و تحلیلی است که با هدف ارائهٔ اخبار دقیق، تحلیل‌های عمیق و نگاهی متفاوت به رویدادهای مهم فعالیت می‌کند."
+  },
+  "Common": {
+    "skipToContent": "پرش به محتوای اصلی"
+  },
+  "Header": {
+    "search": "جستجو",
+    "switchLanguage": "Switch to English",
+    "openMenu": "باز کردن منو",
+    "closeMenu": "بستن منو"
+  },
+  "Footer": {
+    "categories": "دسته‌بندی‌ها",
+    "about": "دربارهٔ {name}",
+    "contact": "ارتباط با ما",
+    "rss": "خوراک RSS",
+    "rights": "تمام حقوق برای {name} محفوظ است.",
+    "aboutLinks": {
+      "about": "دربارهٔ ما",
+      "contact": "تماس با ما",
+      "terms": "قوانین و شرایط",
+      "privacy": "حریم خصوصی"
+    },
+    "social": {
+      "telegram": "تلگرام",
+      "instagram": "اینستاگرام",
+      "x": "ایکس"
+    }
+  },
+  "Ticker": {
+    "label": "خبر فوری",
+    "previous": "خبر قبلی",
+    "next": "خبر بعدی"
+  },
+  "Latest": {
+    "previous": "اخبار قبلی",
+    "next": "اخبار بعدی",
+    "loadFailed": "بارگذاری اخبار بیشتر ناموفق بود.",
+    "retry": "تلاش دوباره",
+    "statusLoading": "در حال بارگذاری اخبار بیشتر",
+    "statusError": "بارگذاری اخبار بیشتر ناموفق بود",
+    "added": "{count, number} خبر دیگر اضافه شد؛ مجموعاً {total, number} خبر.",
+    "end": "به انتهای فهرست رسیدید.",
+    "noMore": "خبر دیگری وجود ندارد."
+  },
+  "Pagination": {
+    "label": "صفحه‌بندی",
+    "previous": "صفحهٔ قبل",
+    "next": "صفحهٔ بعد"
+  },
+  "Categories": {
+    "politics": "سیاست",
+    "world": "جهان",
+    "economy": "اقتصاد",
+    "technology": "فناوری",
+    "culture": "فرهنگ",
+    "science": "علم"
+  },
+  "Nav": {
+    "home": "صفحهٔ اصلی"
+  },
+  "Category": {
+    "metaDescription": "آخرین اخبار و تحلیل‌های {category} در {site}",
+    "count": "{count} خبر",
+    "empty": "هنوز خبری در این دسته منتشر نشده است"
+  },
+  "Home": {
+    "breaking": "خبر فوری",
+    "latest": "آخرین اخبار",
+    "viewAll": "مشاهدهٔ همه",
+    "readingTime": "{minutes} دقیقه مطالعه",
+    "topStories": "مهم‌ترین خبرها",
+    "empty": "هنوز خبری منتشر نشده است."
+  },
+  "Newsletter": {
+    "title": "هر صبح، مهم‌ترین اخبار در ایمیل شما",
+    "description": "با عضویت در خبرنامهٔ روزانه، گزیدهٔ خبرها و تحلیل‌ها را دریافت کنید.",
+    "emailLabel": "ایمیل",
+    "emailPlaceholder": "ایمیل خود را وارد کنید",
+    "submit": "عضویت",
+    "pending": "در حال ثبت…",
+    "success": "عضویت شما ثبت شد.",
+    "genericError": "خطایی رخ داد. لطفاً دوباره تلاش کنید.",
+    "invalidEmail": "ایمیل واردشده معتبر نیست."
+  },
+  "Errors": {
+    "title": "مشکلی پیش آمد",
+    "description": "بارگذاری این صفحه با خطا روبه‌رو شد. چند لحظه بعد دوباره تلاش کنید.",
+    "retry": "تلاش دوباره",
+    "loading": "در حال بارگذاری…",
+    "notFound": "۴۰۴ | صفحه پیدا نشد"
+  },
+  "Article": {
+    "home": "صفحهٔ اصلی",
+    "readMinutes": "{count} دقیقه مطالعه",
+    "related": "خبرهای مرتبط"
+  }
+}

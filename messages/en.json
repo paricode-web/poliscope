@@ -1,0 +1,103 @@
+
+{
+  "Site": {
+    "name": "Poliscope",
+    "tagline": "Tracking politics | Analyzing society",
+    "description": "An independent, analytical media outlet committed to accurate news, in-depth analysis and a fresh perspective on major events."
+  },
+  "Common": {
+    "skipToContent": "Skip to main content"
+  },
+  "Header": {
+    "search": "Search",
+    "switchLanguage": "Switch to Persian",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "Footer": {
+    "categories": "Categories",
+    "about": "About {name}",
+    "contact": "Contact us",
+    "rss": "RSS feed",
+    "rights": "All rights reserved by {name}.",
+    "aboutLinks": {
+      "about": "About us",
+      "contact": "Contact us",
+      "terms": "Terms & conditions",
+      "privacy": "Privacy policy"
+    },
+    "social": {
+      "telegram": "Telegram",
+      "instagram": "Instagram",
+      "x": "X"
+    }
+  },
+  "Ticker": {
+    "label": "Breaking news",
+    "previous": "Previous story",
+    "next": "Next story"
+  },
+  "Latest": {
+    "previous": "Previous news",
+    "next": "Next news",
+    "loadFailed": "Couldn't load more news.",
+    "retry": "Try again",
+    "statusLoading": "Loading more news",
+    "statusError": "Couldn't load more news",
+    "added": "{count, number} more articles added; {total, number} in total.",
+    "end": "You've reached the end of the list.",
+    "noMore": "No more articles."
+  },
+  "Pagination": {
+    "label": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page"
+  },
+  "Categories": {
+    "politics": "Politics",
+    "world": "World",
+    "economy": "Economy",
+    "technology": "Technology",
+    "culture": "Culture",
+    "science": "Science"
+  },
+  "Nav": {
+    "home": "Home"
+  },
+  "Category": {
+    "metaDescription": "Latest {category} news and analysis on {site}",
+    "count": "{count, plural, one {# article} other {# articles}}",
+    "empty": "No articles have been published in this category yet"
+  },
+  "Home": {
+    "breaking": "Breaking news",
+    "latest": "Latest news",
+    "viewAll": "View all",
+    "readingTime": "{minutes} min read",
+    "topStories": "Top stories",
+    "empty": "No articles have been published yet."
+  },
+  "Newsletter": {
+    "title": "The top news in your inbox every morning",
+    "description": "Subscribe to our daily newsletter to get a digest of news and analysis.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "submit": "Subscribe",
+    "pending": "Subscribing…",
+    "success": "You're subscribed.",
+    "genericError": "Something went wrong. Please try again.",
+    "invalidEmail": "Please enter a valid email address."
+  },
+  "Errors": {
+    "title": "Something went wrong",
+    "description": "This page failed to load. Please try again in a moment.",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "notFound": "404 | Page not found"
+  },
+  "Article": {
+    "home": "Home",
+    "readMinutes": "{count} min read",
+    "related": "Related stories"
+  }
+}

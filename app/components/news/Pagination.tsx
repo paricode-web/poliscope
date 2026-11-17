@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
-import { formatNumber } from "@/lib/format";
 
 interface PaginationProps {
   currentPage: number;
@@ -22,6 +22,9 @@ function pageWindow(current: number, total: number): Array<number | "gap"> {
 }
 
 export function Pagination({ currentPage, totalPages, basePath, query }: PaginationProps) {
+  const t = useTranslations("Pagination");
+  const format = useFormatter();
+
   if (totalPages <= 1) return null;
 
   const href = (page: number) => {
@@ -32,14 +35,14 @@ export function Pagination({ currentPage, totalPages, basePath, query }: Paginat
   };
 
   return (
-    <nav aria-label="صفحه‌بندی" className="flex items-center justify-center gap-2">
+    <nav aria-label={t("label")} className="flex items-center justify-center gap-2">
       {currentPage > 1 ? (
-        <Link href={href(currentPage - 1)} aria-label="صفحهٔ قبل" className={cn(itemClass, "hover:bg-canvas-2")}>
-          <ChevronRight aria-hidden className="size-4" />
+        <Link href={href(currentPage - 1)} aria-label={t("previous")} className={cn(itemClass, "hover:bg-canvas-2")}>
+          <ChevronLeft aria-hidden className="size-4 rtl:-scale-x-100" />
         </Link>
       ) : (
         <span aria-hidden className={cn(itemClass, "opacity-40")}>
-          <ChevronRight className="size-4" />
+          <ChevronLeft className="size-4 rtl:-scale-x-100" />
         </span>
       )}
 
@@ -58,18 +61,18 @@ export function Pagination({ currentPage, totalPages, basePath, query }: Paginat
               page === currentPage ? "border-accent-strong bg-accent-strong text-accent-ink" : "hover:bg-canvas-2",
             )}
           >
-            {formatNumber(page)}
+            {format.number(page)}
           </Link>
         ),
       )}
 
       {currentPage < totalPages ? (
-        <Link href={href(currentPage + 1)} aria-label="صفحهٔ بعد" className={cn(itemClass, "hover:bg-canvas-2")}>
-          <ChevronLeft aria-hidden className="size-4" />
+        <Link href={href(currentPage + 1)} aria-label={t("next")} className={cn(itemClass, "hover:bg-canvas-2")}>
+          <ChevronRight aria-hidden className="size-4 rtl:-scale-x-100" />
         </Link>
       ) : (
         <span aria-hidden className={cn(itemClass, "opacity-40")}>
-          <ChevronLeft className="size-4" />
+          <ChevronRight className="size-4 rtl:-scale-x-100" />
         </span>
       )}
     </nav>

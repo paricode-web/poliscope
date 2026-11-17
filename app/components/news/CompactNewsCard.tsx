@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { CategoryBadge } from "../ui/CategoryBadge";
 import { CoverImage } from "../ui/CoverImage";
 import { cn } from "@/lib/cn";

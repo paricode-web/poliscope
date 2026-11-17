@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type FocusEvent, type ReactNode } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type { LatestFeedState } from "./useLatestFeed";
 import { NewsCard } from "./NewsCard";
 
@@ -19,6 +20,9 @@ const focusRing =
  * چون نگاشت ۱ به ۱ است، اضافه‌شدن خبر جدید به انتهای مسیر هیچ پرشی ایجاد نمی‌کند.
  */
 export function PinnedTrack({ feed, heading }: { feed: LatestFeedState; heading: ReactNode }) {
+  const t = useTranslations("Latest");
+  const locale = useLocale();
+  const textDir = locale === "fa" ? "rtl" : "ltr";
   const { items, hasMore, loading, error, status, loadMore } = feed;
 
   const runwayRef = useRef<HTMLDivElement>(null);
@@ -77,10 +81,10 @@ export function PinnedTrack({ feed, heading }: { feed: LatestFeedState; heading:
           }}
           className="overflow-hidden py-2"
         >
-          {/* مسیر عمداً LTR است تا دید با اسکرول به‌سمت راست برود؛ متن کارت‌ها همچنان RTL می‌ماند. */}
+          {/* مسیر عمداً LTR است تا دید با اسکرول به‌سمت راست برود؛ جهت متن هر کارت از زبان صفحه می‌آید. */}
           <ul ref={trackRef} dir="ltr" onFocus={onFocus} className="relative flex w-full gap-6 will-change-transform">
             {items.map((article) => (
-              <li key={article.id} dir="rtl" className="w-[26rem] shrink-0">
+              <li key={article.id} dir={textDir} className="w-[26rem] shrink-0">
                 <NewsCard article={article} />
               </li>
             ))}
@@ -92,14 +96,14 @@ export function PinnedTrack({ feed, heading }: { feed: LatestFeedState; heading:
             )}
 
             {error && (
-              <li dir="rtl" className="flex w-64 shrink-0 flex-col items-center justify-center gap-3 text-center">
-                <p className="text-sm text-ink-2">بارگذاری اخبار بیشتر ناموفق بود.</p>
+              <li dir={textDir} className="flex w-64 shrink-0 flex-col items-center justify-center gap-3 text-center">
+                <p className="text-sm text-ink-2">{t("loadFailed")}</p>
                 <button
                   type="button"
                   onClick={() => void loadMore()}
                   className={`inline-flex min-h-11 items-center rounded-lg border border-line bg-surface px-5 text-sm font-bold transition-colors hover:text-accent-strong ${focusRing}`}
                 >
-                  تلاش دوباره
+                  {t("retry")}
                 </button>
               </li>
             )}

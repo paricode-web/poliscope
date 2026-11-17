@@ -1,6 +1,9 @@
+import { useTranslations } from "next-intl";
 import { NewsletterForm } from "./NewsletterForm";
 
 export function NewsletterSection() {
+  const t = useTranslations("Newsletter");
+
   return (
     <section
       aria-labelledby="newsletter-heading"
@@ -8,9 +11,9 @@ export function NewsletterSection() {
     >
       <div>
         <h2 id="newsletter-heading" className="text-h4 font-extrabold md:text-h3">
-          هر صبح، مهم‌ترین اخبار در ایمیل شما
+          {t("title")}
         </h2>
-        <p className="mt-3 text-ink-2">با عضویت در خبرنامهٔ روزانه، گزیدهٔ خبرها و تحلیل‌ها را دریافت کنید.</p>
+        <p className="mt-3 text-ink-2">{t("description")}</p>
       </div>
       <NewsletterForm />
     </section>

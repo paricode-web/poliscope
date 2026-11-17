@@ -9,6 +9,11 @@ export interface SeedArticle {
   readMinutes: number;
   isBreaking?: boolean;
   featuredRank?: number;
+
+  en?: {
+    title: string;
+    summary: string;
+  };
 }
 
 function article(

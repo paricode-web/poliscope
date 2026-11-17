@@ -1,33 +1,36 @@
 
-import type { Article, Category, CategorySlug } from "./types";
+import type { Article, CategorySlug } from "./types";
 
 export const siteConfig = {
   name: "Poliscope",
-  tagline: "رسانهٔ خبری تحلیلی",
+  tagline: "نگاهی فراتر از خبر",
   description:
-    "دیدگاه رسانه‌ای مستقل و تحلیلی است که با هدف ارائهٔ اخبار دقیق، تحلیل‌های عمیق و نگاهی متفاوت به رویدادهای مهم فعالیت می‌کند.",
+    "Poliscope؛ نگاهی تحلیلی به مهم‌ترین اخبار و تحولات ایران و جهان در حوزه سیاست، اقتصاد، فناوری، فرهنگ و علم.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+
   email: "info@didgahnews.ir",
+
   social: [
-    { label: "تلگرام", href: "https://t.me/" },
-    { label: "اینستاگرام", href: "https://instagram.com/" },
-    { label: "ایکس", href: "https://x.com/" },
+    { key: "telegram", href: "https://t.me/" },
+    { key: "instagram", href: "https://instagram.com/" },
+    { key: "x", href: "https://x.com/" },
   ],
+
   about: [
-    { label: "دربارهٔ ما", href: "/about" },
-    { label: "تماس با ما", href: "/contact" },
-    { label: "قوانین و شرایط", href: "/terms" },
-    { label: "حریم خصوصی", href: "/privacy" },
+    { key: "about", href: "/about" },
+    { key: "contact", href: "/contact" },
+    { key: "terms", href: "/terms" },
+    { key: "privacy", href: "/privacy" },
   ],
 } as const;
 
-export const categories: Category[] = [
-  { slug: "politics", name: "سیاست" },
-  { slug: "world", name: "جهان" },
-  { slug: "economy", name: "اقتصاد" },
-  { slug: "technology", name: "فناوری" },
-  { slug: "culture", name: "فرهنگ" },
-  { slug: "science", name: "علم" },
+export const categories: { slug: CategorySlug }[] = [
+  { slug: "politics" },
+  { slug: "world" },
+  { slug: "economy" },
+  { slug: "technology" },
+  { slug: "culture" },
+  { slug: "science" },
 ];
 
 export interface NavItem {
@@ -36,21 +39,16 @@ export interface NavItem {
 }
 
 export const categoryHref = (slug: CategorySlug) => `/category/${slug}`;
-export const articleHref = (article: Pick<Article, "slug">) => `/news/${article.slug}`;
 
-export const navItems: NavItem[] = [
-  { label: "صفحهٔ اصلی", href: "/" },
-  ...categories.map((c) => ({ label: c.name, href: categoryHref(c.slug) })),
-];
+export const articleHref = (article: Pick<Article, "slug">) =>
+  `/news/${article.slug}`;
 
-export function findCategory(slug: string): Category | undefined {
+export function findCategory(slug: string) {
   return categories.find((c) => c.slug === slug);
 }
 
-export const absoluteUrl = (path: string) => new URL(path, siteConfig.url).toString();
+// Backward-compatible alias for existing imports
+export const getCategory = findCategory;
 
-export function getCategory(slug: CategorySlug): Category {
-  const category = categories.find((c) => c.slug === slug);
-  if (!category) throw new Error(`Unknown category: ${slug}`);
-  return category;
-}
+export const absoluteUrl = (path: string) =>
+  new URL(path, siteConfig.url).toString();

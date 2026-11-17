@@ -8,7 +8,7 @@ export type CategorySlug =
 
 export interface Category {
   slug: CategorySlug;
-  name: string;
+
 }
 
 export interface ArticleImage {

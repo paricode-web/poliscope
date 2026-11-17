@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAdminOverview } from "@/lib/admin"; 
+import { getAdminOverview } from "@/lib/admin";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { requireAdmin } from "@/lib/require-admin";
 import { articleHref } from "@/lib/site";
@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const session = await requireAdmin();
   const { published, scheduled, subscribers, latest } = await getAdminOverview();
 
@@ -20,11 +25,38 @@ export default async function AdminPage() {
     { label: "مشترکان خبرنامه", value: subscribers },
   ];
 
+  const base = `/${locale}/admin/articles`;
+
   return (
     <div className="container-page py-10 lg:py-14">
-      <header className="mb-10 border-b border-line pb-6">
-        <h1 className="border-s-4 border-accent ps-4 text-h3 font-extrabold md:text-h2">پنل مدیریت</h1>
-        <p className="mt-3 text-ink-2">خوش آمدید، {session.user?.name ?? "ادمین"}</p>
+      <header className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
+        <div>
+          <h1 className="border-s-4 border-accent ps-4 text-h3 font-extrabold md:text-h2">
+            پنل مدیریت
+          </h1>
+          <p className="mt-3 text-ink-2">خوش آمدید، {session.user?.name ?? "ادمین"}</p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`${base}/new?type=NEWS`}
+            className="rounded-md bg-accent-strong px-4 py-2.5 text-sm font-bold text-accent-ink transition hover:opacity-90"
+          >
+            + خبر
+          </Link>
+          <Link
+            href={`${base}/new?type=ARTICLE`}
+            className="rounded-md border border-line px-4 py-2.5 text-sm font-bold transition hover:border-accent"
+          >
+            + مقاله
+          </Link>
+          <Link
+            href={`${base}/new?type=ANALYSIS`}
+            className="rounded-md border border-line px-4 py-2.5 text-sm font-bold transition hover:border-accent"
+          >
+            + تحلیل
+          </Link>
+        </div>
       </header>
 
       <dl className="grid gap-4 sm:grid-cols-3">
@@ -37,14 +69,25 @@ export default async function AdminPage() {
       </dl>
 
       <section aria-labelledby="latest-articles" className="mt-14">
-        <h2 id="latest-articles" className="mb-4 text-h4 font-extrabold">
-          آخرین خبرها
-        </h2>
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 id="latest-articles" className="text-h4 font-extrabold">
+            آخرین خبرها
+          </h2>
+          <Link href={base} className="text-sm font-bold text-accent-strong hover:underline underline-offset-4">
+            مدیریت همهٔ محتوا ←
+          </Link>
+        </div>
 
         {latest.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-line py-12 text-center text-ink-2">
-            هنوز خبری ثبت نشده است.
-          </p>
+          <div className="rounded-lg border border-dashed border-line py-12 text-center">
+            <p className="text-ink-2">هنوز خبری ثبت نشده است.</p>
+            <Link
+              href={`${base}/new`}
+              className="mt-4 inline-block font-bold text-accent-strong hover:underline underline-offset-4"
+            >
+              اولین خبر را بسازید
+            </Link>
+          </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-line bg-surface">
             <table className="w-full min-w-[640px] text-start text-sm">
@@ -62,7 +105,10 @@ export default async function AdminPage() {
                   <tr key={article.id}>
                     <td className="px-4 py-3 font-medium">
                       {article.status === "published" ? (
-                        <Link href={articleHref(article)} className="hover:text-accent-strong hover:underline underline-offset-4">
+                        <Link
+                          href={articleHref(article)}
+                          className="hover:text-accent-strong hover:underline underline-offset-4"
+                        >
                           {article.title}
                         </Link>
                       ) : (
@@ -87,7 +133,9 @@ export default async function AdminPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-ink-2">
-                      <time dateTime={article.publishedAt}>{formatDateTime(article.publishedAt)}</time>
+                      <time dateTime={article.publishedAt}>
+                        {formatDateTime(article.publishedAt)}
+                      </time>
                     </td>
                   </tr>
                 ))}

@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type { Article } from "@/lib/types";
-
-const faNumber = new Intl.NumberFormat("fa-IR");
 
 interface SliceResponse {
   items: Article[];
@@ -20,6 +19,9 @@ interface Options {
 
 /** منطق مشترک بارگذاری بی‌نهایت «آخرین اخبار»؛ هم ریل ساده و هم حالت پین‌شده از آن استفاده می‌کنند. */
 export function useLatestFeed({ initialArticles, initialHasMore, asOf, pageSize }: Options) {
+  const t = useTranslations("Latest");
+  const locale = useLocale();
+
   const [items, setItems] = useState(initialArticles);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
@@ -45,6 +47,7 @@ export function useLatestFeed({ initialArticles, initialHasMore, asOf, pageSize 
         offset: String(offsetRef.current),
         limit: String(pageSize),
         asOf,
+        locale,
       });
       const response = await fetch(`/api/news/latest?${params}`, { signal: controller.signal });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -59,10 +62,10 @@ export function useLatestFeed({ initialArticles, initialHasMore, asOf, pageSize 
       setHasMore(data.hasMore);
       setAnnouncement(
         fresh.length > 0
-          ? `${faNumber.format(fresh.length)} خبر دیگر اضافه شد؛ مجموعاً ${faNumber.format(idsRef.current.size)} خبر${
-              data.hasMore ? "" : ". به انتهای فهرست رسیدید"
+          ? `${t("added", { count: fresh.length, total: idsRef.current.size })}${
+              data.hasMore ? "" : ` ${t("end")}`
             }`
-          : "خبر دیگری وجود ندارد",
+          : t("noMore"),
       );
     } catch (reason) {
       if (!(reason instanceof DOMException && reason.name === "AbortError")) setError(true);
@@ -70,15 +73,11 @@ export function useLatestFeed({ initialArticles, initialHasMore, asOf, pageSize 
       loadingRef.current = false;
       setLoading(false);
     }
-  }, [asOf, hasMore, pageSize]);
+  }, [asOf, hasMore, pageSize, locale, t]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  const status = loading
-    ? "در حال بارگذاری اخبار بیشتر"
-    : error
-      ? "بارگذاری اخبار بیشتر ناموفق بود"
-      : announcement;
+  const status = loading ? t("statusLoading") : error ? t("statusError") : announcement;
 
   return { items, hasMore, loading, error, status, initialCount: initialArticles.length, loadMore };
 }
