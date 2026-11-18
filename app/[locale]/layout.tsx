@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Vazirmatn } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -25,6 +25,12 @@ type LayoutProps = {
 };
 
 const resolveLocale = (raw: string) => (hasLocale(routing.locales, raw) ? raw : routing.defaultLocale);
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export async function generateMetadata({ params }: Pick<LayoutProps, "params">): Promise<Metadata> {
   const locale = resolveLocale((await params).locale);

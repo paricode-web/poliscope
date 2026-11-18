@@ -23,8 +23,8 @@ export async function Header() {
 
   return (
    
-<header className="sticky top-0 z-40 border-b border-line bg-canvas">
-  <div className="container-page flex h-14 items-center gap-3 sm:h-16 sm:gap-6 lg:h-20">
+<header className="sticky top-0 z-40 border-b border-line bg-canvas pt-[env(safe-area-inset-top)]">
+  <div className="container-page relative flex h-14 items-center gap-2 px-4 sm:h-16 sm:gap-6 sm:px-6 lg:h-20">
     <Logo />
 
     <MainNav items={navItems} className="hidden lg:block" />

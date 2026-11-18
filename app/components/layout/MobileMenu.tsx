@@ -32,12 +32,11 @@ const t = useTranslations("Header");
         {open ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
       </button>
       {open && (
-        <div id="mobile-menu" className="absolute inset-x-0 top-full border-b border-line bg-canvas">
-          <div className="container-page py-2">
-            <MainNav items={items} orientation="vertical" onNavigate={() => setOpen(false)} />
-         
-          </div>
-        </div>
+       <div id="mobile-menu" className="absolute inset-x-0 top-full max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-line bg-canvas shadow-lg">
+  <div className="container-page px-4 py-2">
+    <MainNav items={items} orientation="vertical" onNavigate={() => setOpen(false)} />
+  </div>
+</div>
       )}
     </div>
   );
