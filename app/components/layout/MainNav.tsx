@@ -1,11 +1,15 @@
 "use client";
 
+import { LayoutDashboard } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 import type { NavItem } from "@/lib/site";
+
+type MainNavItem = NavItem & { highlight?: boolean };
+
 interface MainNavProps {
-  items: NavItem[];
+  items: MainNavItem[];
   orientation?: "horizontal" | "vertical";
   className?: string;
   onNavigate?: () => void;
@@ -14,12 +18,33 @@ interface MainNavProps {
 export function MainNav({ items, orientation = "horizontal", className, onNavigate }: MainNavProps) {
   const pathname = usePathname();
   const horizontal = orientation === "horizontal";
-const t = useTranslations("Footer");
+  const t = useTranslations("Footer");
+
   return (
     <nav aria-label={t("categories")} className={className}>
       <ul className={cn("flex", horizontal ? "items-center gap-1" : "flex-col")}>
         {items.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+
+          if (item.highlight) {
+            return (
+              <li key={item.href} className={cn(!horizontal && "pt-3 pb-1")}>
+                <Link
+                  href={item.href}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "inline-flex w-full items-center justify-center gap-2 rounded-md bg-accent px-4 py-3 text-base font-bold text-accent-ink transition-opacity hover:opacity-90",
+                    horizontal && "w-auto py-2 text-sm",
+                  )}
+                >
+                  <LayoutDashboard aria-hidden className="size-4" />
+                  {item.label}
+                </Link>
+              </li>
+            );
+          }
+
           return (
             <li key={item.href}>
               <Link

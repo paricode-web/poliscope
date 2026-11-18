@@ -2,14 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { iconButtonClass } from "../ui/styles"; 
+import { iconButtonClass } from "../ui/styles";
 import type { NavItem } from "@/lib/site";
 import { MainNav } from "./MainNav";
 import { useTranslations } from "next-intl";
 
-export function MobileMenu({ items }: { items: NavItem[] }) {
+type MenuItem = NavItem & { highlight?: boolean };
+
+export function MobileMenu({ items }: { items: MenuItem[] }) {
   const [open, setOpen] = useState(false);
-const t = useTranslations("Header");
+  const t = useTranslations("Header");
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
