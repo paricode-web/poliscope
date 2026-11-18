@@ -30,7 +30,7 @@ export async function Header() {
 
   // در منوی موبایل، آیتم پنل ادمین آخر لیست می‌آید
 const mobileItems = isAdmin
-  ? [...navItems, { label: adminLabel, href: "/admin", highlight: true }]
+  ? [...navItems, { label: adminLabel, href: "/admin/articles", highlight: true }]
   : navItems;
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-canvas pt-[env(safe-area-inset-top)]">
@@ -42,7 +42,7 @@ const mobileItems = isAdmin
         <div className="ms-auto flex shrink-0 items-center gap-0.5 sm:gap-1">
           {isAdmin && (
             <Link
-              href="/admin"
+              href="/admin/articles"
               className="me-2 hidden items-center gap-2 rounded-md border border-line px-3 py-1.5 text-sm font-medium transition-colors hover:text-accent-strong lg:inline-flex"
             >
               <LayoutDashboard aria-hidden className="size-4" />
