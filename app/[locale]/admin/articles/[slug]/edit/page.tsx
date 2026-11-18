@@ -11,6 +11,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+const decode = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+const statusLabel = (status: string) => (status === "PUBLISHED" ? "منتشرشده" : "پیش‌نویس");
+
 export default async function EditArticlePage({
   params,
 }: {
@@ -20,20 +30,32 @@ export default async function EditArticlePage({
   const { locale, slug } = await params;
   const dbLocale = locale === "en" ? Locale.EN : Locale.FA;
 
-  const [article, categories] = await Promise.all([
-    prisma.article.findFirst({
-      where: { locale: dbLocale, slug: decodeURIComponent(slug) },
+  // رکوردی که آدرس به آن اشاره می‌کند، فقط برای پیدا کردن کلید اتصال ترجمه‌ها.
+  const current = await prisma.article.findFirst({
+    where: { locale: dbLocale, slug: decode(slug) },
+    select: { translationKey: true },
+  });
+  if (!current) notFound();
+
+  const [versions, categories] = await Promise.all([
+    prisma.article.findMany({
+      where: { translationKey: current.translationKey },
       include: { category: { select: { slug: true } } },
-    }), 
+    }),
     prisma.category.findMany({
       orderBy: { name: "asc" },
       select: { slug: true, name: true },
     }),
   ]);
 
-  if (!article) notFound();
+  const fa = versions.find((v) => v.locale === Locale.FA);
+  const en = versions.find((v) => v.locale === Locale.EN);
 
-  const d = article.publishedAt;
+  // فیلدهای مشترک از نسخهٔ فارسی خوانده می‌شوند؛ اگر فارسی نبود، از انگلیسی.
+  const base = fa ?? en;
+  if (!base) notFound();
+
+  const d = base.publishedAt;
   const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
     .toISOString()
     .slice(0, 16);
@@ -47,26 +69,44 @@ export default async function EditArticlePage({
         <h1 className="mt-2 border-s-4 border-accent ps-4 text-h3 font-extrabold md:text-h2">
           ویرایش
         </h1>
+        <p className="mt-3 text-sm text-ink-2">
+          نسخهٔ فارسی: {fa ? statusLabel(fa.status) : "ندارد (با ذخیره ساخته می‌شود)"} · نسخهٔ انگلیسی:{" "}
+          {en ? statusLabel(en.status) : "ندارد (در صورت پر کردن، ساخته می‌شود)"}
+        </p>
       </header>
 
       <ArticleForm
         locale={locale}
         categories={categories}
-        originalSlug={article.slug}
+        translationKey={current.translationKey}
+        originalSlug={fa?.slug}
+        enOriginalSlug={en?.slug}
         values={{
-          title: article.title,
-          slug: article.slug,
-          summary: article.summary,
-          body: article.body,
-          type: article.type,
-          status: article.status,
-          categorySlug: article.category.slug,
-          imageUrl: article.imageUrl ?? "",
-          imageAlt: article.imageAlt ?? "",
-          isBreaking: article.isBreaking,
-          featuredRank: article.featuredRank?.toString() ?? "",
+          title: fa?.title ?? "",
+          slug: fa?.slug ?? "",
+          summary: fa?.summary ?? "",
+          body: fa?.body ?? "",
+          status: fa?.status ?? "PUBLISHED",
+          imageAlt: fa?.imageAlt ?? "",
+          type: base.type,
+          categorySlug: base.category.slug,
+          imageUrl: base.imageUrl ?? "",
+          isBreaking: base.isBreaking,
+          featuredRank: base.featuredRank?.toString() ?? "",
           publishedAt: localDate,
         }}
+        enValues={
+          en
+            ? {
+                title: en.title,
+                slug: en.slug,
+                summary: en.summary,
+                body: en.body,
+                status: en.status,
+                imageAlt: en.imageAlt ?? "",
+              }
+            : undefined
+        }
       />
     </div>
   );

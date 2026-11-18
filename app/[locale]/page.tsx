@@ -5,7 +5,7 @@ import { FeaturedArticle } from "../components/news/FeaturedArticle";
 import { NewsCard } from "../components/news/NewsCard";
 import { NewsletterSection } from "../components/news/NewsletterSection";
 import { SectionHeader } from "../components/ui/SectionHeader";
-import { getHomeFeed } from "@/lib/news"
+import { getHomeFeed } from "@/lib/news";
 
 export const revalidate = 300;
 

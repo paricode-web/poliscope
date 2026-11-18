@@ -95,6 +95,8 @@ translationKey String        @default(dbgenerated("(gen_random_uuid())::text"))
   @@index([isBreaking, publishedAt(sort: Desc)])
   @@index([featuredRank])
   @@index([authorId])
+  @@unique([locale, translationKey])
+ 
   @@index([translationKey])
 }
 

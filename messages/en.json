@@ -12,7 +12,10 @@
     "search": "Search",
     "switchLanguage": "Switch to Persian",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "languageUnavailable": "This article is not available in this language",
+"languageUnavailableShort": "Unavailable"
+    
   },
   "Footer": {
     "categories": "Categories",
@@ -99,5 +102,15 @@
     "home": "Home",
     "readMinutes": "{count} min read",
     "related": "Related stories"
-  }
+  },
+  "Home": { "topStories": "Top stories", "empty": "No articles have been published yet." },
+"Article": { "related": "Related news" },
+"Search": {
+  "title": "Search",
+  "promptTitle": "What are you looking for?",
+  "promptDescription": "Type a term or start from a category.",
+  "noResultsTitle": "No results found for “{query}”",
+  "noResultsDescription": "Check the spelling or try a shorter term.",
+  "resultCount": "{count, plural, one {# result} other {# results}} for “{query}”"
+}
 }

@@ -22,20 +22,30 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-canvas">
-      <div className="container-page flex h-16 items-center gap-6 lg:h-20">
-        <Logo />
-        <MainNav items={navItems} className="hidden lg:block" />
-        <div className="ms-auto flex items-center gap-1">
-          <SearchInput id="header-search" className="hidden w-60 xl:flex" />
-          <Link href="/search" aria-label={t("search")} className={cn(iconButtonClass, "xl:hidden")}>
-            <Search aria-hidden className="size-5" />
-          </Link>
-          <ThemeToggle />
-          <MobileMenu items={navItems} />
-          <LanguageSwitcher />
-        </div>
-      </div>
-    </header>
+   
+<header className="sticky top-0 z-40 border-b border-line bg-canvas">
+  <div className="container-page flex h-14 items-center gap-3 sm:h-16 sm:gap-6 lg:h-20">
+    <Logo />
+
+    <MainNav items={navItems} className="hidden lg:block" />
+
+    <div className="ms-auto flex shrink-0 items-center gap-0.5 sm:gap-1">
+      <SearchInput id="header-search" className="hidden w-60 xl:flex" />
+
+      <Link
+        href="/search"
+        aria-label={t("search")}
+        className={cn(iconButtonClass, "xl:hidden")}
+      >
+        <Search aria-hidden className="size-5" />
+      </Link>
+
+      <ThemeToggle />
+      <MobileMenu items={navItems} />
+      <LanguageSwitcher />
+    </div>
+  </div>
+</header>
+
   );
 }

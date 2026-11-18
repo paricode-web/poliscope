@@ -1,149 +1,126 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { getAdminOverview } from "@/lib/admin";
-import { formatDateTime, formatNumber } from "@/lib/format";
-import { requireAdmin } from "@/lib/require-admin";
-import { articleHref } from "@/lib/site";
+import { notFound } from "next/navigation";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { ArticleBody } from "@/app/components/news/ArticleBody";
+import { NewsCard } from "@/app/components/news/NewsCard";
+import { JsonLd } from "@/app/components/seo/JsonLd";
+import { Breadcrumbs } from "@/app/components/ui/Breadcrumbs";
+import { CategoryBadge } from "@/app/components/ui/CategoryBadge";
+import { CoverImage } from "@/app/components/ui/CoverImage";
+import { SectionHeader } from "@/app/components/ui/SectionHeader";
+import { getPathname } from "@/i18n/navigation";
+import { getArticleBySlug, getRelatedArticles } from "@/lib/news";
+import { absoluteUrl, articleHref, categoryHref } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "پنل مدیریت",
-  robots: { index: false, follow: false },
-};
+interface ArticlePageProps {
+  params: Promise<{ locale: string; slug: string }>;
+}
 
-export default async function AdminPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  const session = await requireAdmin();
-  const { published, scheduled, subscribers, latest } = await getAdminOverview();
+export const revalidate = 300;
 
-  const stats = [
-    { label: "خبرهای منتشرشده", value: published },
-    { label: "خبرهای زمان‌بندی‌شده", value: scheduled },
-    { label: "مشترکان خبرنامه", value: subscribers },
-  ];
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const article = await getArticleBySlug(slug, locale);
+  if (!article) return {};
+  return {
+    title: article.title,
+    description: article.summary,
+    alternates: { canonical: getPathname({ href: articleHref(article), locale }) },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.summary,
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt,
+      images: article.image ? [{ url: article.image.src, alt: article.image.alt }] : undefined,
+    },
+    twitter: { card: article.image ? "summary_large_image" : "summary" },
+  };
+}
 
-  const base = `/${locale}/admin/articles`;
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
+  const article = await getArticleBySlug(slug, locale);
+  if (!article) notFound();
+
+  const t = await getTranslations("Article");
+  const tNav = await getTranslations("Nav");
+  const tCat = await getTranslations("Categories");
+  const tSite = await getTranslations("Site");
+  const format = await getFormatter();
+
+  const categoryName = tCat(article.category);
+  const related = await getRelatedArticles(article, locale);
+  const siteName = tSite("name");
 
   return (
     <div className="container-page py-10 lg:py-14">
-      <header className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
-        <div>
-          <h1 className="border-s-4 border-accent ps-4 text-h3 font-extrabold md:text-h2">
-            پنل مدیریت
-          </h1>
-          <p className="mt-3 text-ink-2">خوش آمدید، {session.user?.name ?? "ادمین"}</p>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          headline: article.title,
+          description: article.summary,
+          datePublished: article.publishedAt,
+          dateModified: article.updatedAt,
+          inLanguage: locale,
+          mainEntityOfPage: absoluteUrl(getPathname({ href: articleHref(article), locale })),
+          image: article.image ? [article.image.src] : undefined,
+          author: { "@type": "Organization", name: siteName },
+          publisher: { "@type": "Organization", name: siteName },
+        }}
+      />
+
+      <article>
+        <div className="mx-auto max-w-3xl">
+          <Breadcrumbs
+            items={[
+              { label: tNav("home"), href: "/" },
+              { label: categoryName, href: categoryHref(article.category) },
+              { label: article.title },
+            ]}
+          />
+          <header className="mt-8">
+            <CategoryBadge slug={article.category} />
+            <h1 className="mt-3 text-h3 font-extrabold md:text-h2 lg:text-h1">{article.title}</h1>
+            <p className="mt-5 text-xl text-ink-2">{article.summary}</p>
+            <p className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-1 border-y border-line py-3 text-sm text-ink-2">
+              <time dateTime={article.publishedAt}>
+                {format.dateTime(new Date(article.publishedAt), { dateStyle: "long", timeStyle: "short" })}
+              </time>
+             <span>{t("readMinutes", { count: article.readMinutes })}</span>
+            </p>
+          </header>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href={`${base}/new?type=NEWS`}
-            className="rounded-md bg-accent-strong px-4 py-2.5 text-sm font-bold text-accent-ink transition hover:opacity-90"
-          >
-            + خبر
-          </Link>
-          <Link
-            href={`${base}/new?type=ARTICLE`}
-            className="rounded-md border border-line px-4 py-2.5 text-sm font-bold transition hover:border-accent"
-          >
-            + مقاله
-          </Link>
-          <Link
-            href={`${base}/new?type=ANALYSIS`}
-            className="rounded-md border border-line px-4 py-2.5 text-sm font-bold transition hover:border-accent"
-          >
-            + تحلیل
-          </Link>
-        </div>
-      </header>
-
-      <dl className="grid gap-4 sm:grid-cols-3">
-        {stats.map((stat) => (
-          <div key={stat.label} className="rounded-lg border border-line bg-surface p-6">
-            <dt className="text-sm text-ink-2">{stat.label}</dt>
-            <dd className="mt-2 text-h3 font-extrabold">{formatNumber(stat.value)}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <section aria-labelledby="latest-articles" className="mt-14">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <h2 id="latest-articles" className="text-h4 font-extrabold">
-            آخرین خبرها
-          </h2>
-          <Link href={base} className="text-sm font-bold text-accent-strong hover:underline underline-offset-4">
-            مدیریت همهٔ محتوا ←
-          </Link>
-        </div>
-
-        {latest.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-line py-12 text-center">
-            <p className="text-ink-2">هنوز خبری ثبت نشده است.</p>
-            <Link
-              href={`${base}/new`}
-              className="mt-4 inline-block font-bold text-accent-strong hover:underline underline-offset-4"
-            >
-              اولین خبر را بسازید
-            </Link>
-          </div>
-        ) : (
-          <div className="overflow-x-auto rounded-lg border border-line bg-surface">
-            <table className="w-full min-w-[640px] text-start text-sm">
-              <caption className="sr-only">فهرست آخرین خبرها</caption>
-              <thead className="border-b border-line bg-canvas-2 text-ink-2">
-                <tr>
-                  <th scope="col" className="px-4 py-3 text-start font-medium">عنوان</th>
-                  <th scope="col" className="px-4 py-3 text-start font-medium">دسته</th>
-                  <th scope="col" className="px-4 py-3 text-start font-medium">وضعیت</th>
-                  <th scope="col" className="px-4 py-3 text-start font-medium">زمان انتشار</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {latest.map((article) => (
-                  <tr key={article.id}>
-                    <td className="px-4 py-3 font-medium">
-                      {article.status === "published" ? (
-                        <Link
-                          href={articleHref(article)}
-                          className="hover:text-accent-strong hover:underline underline-offset-4"
-                        >
-                          {article.title}
-                        </Link>
-                      ) : (
-                        article.title
-                      )}
-                      {article.isBreaking && (
-                        <span className="ms-2 rounded-sm bg-accent-soft px-2 py-0.5 text-caption font-bold text-ink">
-                          فوری
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-ink-2">{article.categoryName}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={
-                          article.status === "published"
-                            ? "text-ink-2"
-                            : "font-bold text-accent-strong"
-                        }
-                      >
-                        {article.status === "published" ? "منتشرشده" : "زمان‌بندی‌شده"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-ink-2">
-                      <time dateTime={article.publishedAt}>
-                        {formatDateTime(article.publishedAt)}
-                      </time>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {article.image && (
+          <div className="mx-auto mt-8 max-w-5xl">
+            <CoverImage
+              image={article.image}
+              priority
+              sizes="(min-width: 1024px) 1024px, 100vw"
+              className="aspect-[16/9] rounded-lg"
+            />
           </div>
         )}
-      </section>
+
+        <div className="mx-auto mt-10 max-w-3xl">
+          <ArticleBody body={article.body} />
+        </div>
+      </article>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-heading" className="mt-20 lg:mt-28">
+          <SectionHeader id="related-heading" title={t("related")} href={categoryHref(article.category)} />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((item) => (
+              <NewsCard key={item.id} article={item} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

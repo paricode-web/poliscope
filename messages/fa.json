@@ -12,7 +12,9 @@
     "search": "جستجو",
     "switchLanguage": "Switch to English",
     "openMenu": "باز کردن منو",
-    "closeMenu": "بستن منو"
+    "closeMenu": "بستن منو",
+    "languageUnavailable": "این خبر به این زبان موجود نیست",
+"languageUnavailableShort": "موجود نیست"
   },
   "Footer": {
     "categories": "دسته‌بندی‌ها",
@@ -68,36 +70,5 @@
     "metaDescription": "آخرین اخبار و تحلیل‌های {category} در {site}",
     "count": "{count} خبر",
     "empty": "هنوز خبری در این دسته منتشر نشده است"
-  },
-  "Home": {
-    "breaking": "خبر فوری",
-    "latest": "آخرین اخبار",
-    "viewAll": "مشاهدهٔ همه",
-    "readingTime": "{minutes} دقیقه مطالعه",
-    "topStories": "مهم‌ترین خبرها",
-    "empty": "هنوز خبری منتشر نشده است."
-  },
-  "Newsletter": {
-    "title": "هر صبح، مهم‌ترین اخبار در ایمیل شما",
-    "description": "با عضویت در خبرنامهٔ روزانه، گزیدهٔ خبرها و تحلیل‌ها را دریافت کنید.",
-    "emailLabel": "ایمیل",
-    "emailPlaceholder": "ایمیل خود را وارد کنید",
-    "submit": "عضویت",
-    "pending": "در حال ثبت…",
-    "success": "عضویت شما ثبت شد.",
-    "genericError": "خطایی رخ داد. لطفاً دوباره تلاش کنید.",
-    "invalidEmail": "ایمیل واردشده معتبر نیست."
-  },
-  "Errors": {
-    "title": "مشکلی پیش آمد",
-    "description": "بارگذاری این صفحه با خطا روبه‌رو شد. چند لحظه بعد دوباره تلاش کنید.",
-    "retry": "تلاش دوباره",
-    "loading": "در حال بارگذاری…",
-    "notFound": "۴۰۴ | صفحه پیدا نشد"
-  },
-  "Article": {
-    "home": "صفحهٔ اصلی",
-    "readMinutes": "{count} دقیقه مطالعه",
-    "related": "خبرهای مرتبط"
   }
 }

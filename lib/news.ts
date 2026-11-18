@@ -52,6 +52,7 @@ const toDbLocale = (locale: string) => (locale === "en" ? "EN" : "FA") as DbLoca
 /** فقط خبرهای منتشرشده‌ی همان زبان. هر زبان ردیف جداگانه‌ی خودش را دارد (با translationKey مشترک). */
 const published = (locale: string): Prisma.ArticleWhereInput => ({
   locale: toDbLocale(locale),
+  status: "PUBLISHED",
   publishedAt: { lte: new Date() },
 });
 const newestFirst = { publishedAt: "desc" } as const;
@@ -157,6 +158,33 @@ export const getArticleBySlug = cache(async (slug: string, locale: string): Prom
   return { ...toArticle(row), body: row.body, updatedAt: row.updatedAt.toISOString() };
 });
 
+/**
+ * نسخه‌های منتشرشدهٔ یک خبر در هر زبان (slug هر زبان) از روی translationKey.
+ * برای سوییچر زبان و hreflang؛ نسخه‌ای که پیش‌نویس یا زمان‌بندی‌شده باشد در نتیجه نمی‌آید.
+ */
+export const getArticleTranslations = cache(
+  async (slug: string, locale: string): Promise<Partial<Record<"fa" | "en", string>>> => {
+    const current = await prisma.article.findFirst({
+      where: { slug, ...published(locale) },
+      select: { translationKey: true },
+    });
+    if (!current) return {};
+
+    const rows = await prisma.article.findMany({
+      where: {
+        translationKey: current.translationKey,
+        status: "PUBLISHED",
+        publishedAt: { lte: new Date() },
+      },
+      select: { locale: true, slug: true },
+    });
+
+    const result: Partial<Record<"fa" | "en", string>> = {};
+    for (const row of rows) result[row.locale === "EN" ? "en" : "fa"] = row.slug;
+    return result;
+  },
+);
+
 export async function getRelatedArticles(article: Article, locale: string, limit = 3): Promise<Article[]> {
   const rows = await prisma.article.findMany({
     where: { ...published(locale), category: { slug: article.category }, id: { not: article.id } },
@@ -185,7 +213,7 @@ export async function getLatestSlice(
   asOf: Date = new Date(),
 ): Promise<{ items: Article[]; hasMore: boolean }> {
   const rows = await prisma.article.findMany({
-    where: { locale: toDbLocale(locale), publishedAt: { lte: asOf }, featuredRank: null },
+    where: { locale: toDbLocale(locale), status: "PUBLISHED", publishedAt: { lte: asOf }, featuredRank: null },
     orderBy: newestFirst,
     skip: offset,
     take: limit + 1,
@@ -200,7 +228,7 @@ export async function getLatestSlice(
 /** برای سایت‌مپ: locale هم برمی‌گردد تا آدرس هر زبان جدا ساخته شود. */
 export function getSitemapArticles() {
   return prisma.article.findMany({
-    where: { publishedAt: { lte: new Date() } },
+    where: { status: "PUBLISHED", publishedAt: { lte: new Date() } },
     orderBy: newestFirst,
     select: { slug: true, locale: true, translationKey: true, updatedAt: true },
   });

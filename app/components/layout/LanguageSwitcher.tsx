@@ -3,6 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import { articleHref } from "@/lib/site";
+import { useArticleAlternates } from "./ArticleAlternates";
 
 const LANGUAGES = [
   { code: "fa", label: "فارسی", short: "فا" },
@@ -13,6 +15,7 @@ export function LanguageSwitcher() {
   const locale = useLocale();
   const t = useTranslations("Header");
   const pathname = usePathname();
+  const article = useArticleAlternates();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
@@ -77,11 +80,33 @@ export function LanguageSwitcher() {
         >
           {LANGUAGES.map((lang) => {
             const active = lang.code === locale;
+
+            // در صفحهٔ خبر، مقصد همان خبر در زبان دیگر است، نه آدرس فعلی.
+            const translatedSlug = article?.alternates[lang.code];
+
+            if (article && !translatedSlug) {
+              return (
+                <li key={lang.code} role="none">
+                  <span
+                    role="menuitem"
+                    aria-disabled="true"
+                    title={t("languageUnavailable")}
+                    className="flex cursor-not-allowed items-center justify-between gap-3 px-3 py-2 text-sm opacity-50"
+                  >
+                    <span>{lang.label}</span>
+                    <span className="text-caption">{t("languageUnavailableShort")}</span>
+                  </span>
+                </li>
+              );
+            }
+
+            const href = article && translatedSlug ? articleHref({ slug: translatedSlug }) : pathname;
+
             return (
               <li key={lang.code} role="none">
                 <Link
                   role="menuitem"
-                  href={pathname}
+                  href={href}
                   locale={lang.code}
                   lang={lang.code}
                   hrefLang={lang.code}

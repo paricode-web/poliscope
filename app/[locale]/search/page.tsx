@@ -6,7 +6,7 @@ import { Pagination } from "@/app/components/news/Pagination";
 import { EmptyState } from "@/app/components/ui/EmptyState";
 import { SearchInput } from "@/app/components/ui/SearchInput";
 import { Link } from "@/i18n/navigation";
-import { searchArticles } from "@/lib/news"
+import { searchArticles } from "@/lib/news";
 import { categories, categoryHref } from "@/lib/site";
 import { pageSchema, searchQuerySchema } from "@/lib/validations/listing";
 
@@ -75,4 +75,5 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
         )}
       </div>
     </div>
-  ); }
+  );
+}
